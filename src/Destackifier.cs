@@ -47,7 +47,11 @@ namespace Runic.CIL
             void EmitSilentThrow(int offset)
             {
                 List<int> offsets = new List<int>();
+#if NET6_0_OR_GREATER
                 ExceptionHandler? exceptionHandler = _handlersMap[offset];
+#else
+                ExceptionHandler exceptionHandler = _handlersMap[offset];
+#endif
                 if (exceptionHandler != null)
                 {
                     while (exceptionHandler != null)
@@ -229,7 +233,11 @@ namespace Runic.CIL
             public override void LdFtn(int offset, uint methodToken, int destination) { _converter.EmitAssignment(offset, new Instruction.LdFnt(methodToken), destination, new int[] { }); EmitSilentThrow(offset); }
             public override void Throw(int offset, int exception)
             {
+#if NET6_0_OR_GREATER
                 ExceptionHandler? exceptionHandler = _handlersMap[offset];
+#else
+                ExceptionHandler exceptionHandler = _handlersMap[offset];
+#endif
                 if (exceptionHandler != null)
                 {
                     List<int> offsets = new List<int>();
@@ -252,7 +260,11 @@ namespace Runic.CIL
             }
             public override void Leave(int offset, int address)
             {
+#if NET6_0_OR_GREATER
                 ExceptionHandler? exceptionHandler = _handlersMap[offset];
+#else
+                ExceptionHandler exceptionHandler = _handlersMap[offset];
+#endif
                 if (exceptionHandler != null)
                 {
                     List<int> offsets = new List<int>();
@@ -267,9 +279,15 @@ namespace Runic.CIL
             }
             public override void EndFilter(int offset, int value)
             {
+#if NET6_0_OR_GREATER
                 ToSSA.ExceptionHandlingClause.Filter? currentFilter = _handlersMap.FilterMap[offset];
                 ToSSA.ExceptionHandlingClause? nextClause = null;
                 ExceptionHandler? exceptionHandler = null;
+#else
+                ToSSA.ExceptionHandlingClause.Filter currentFilter = _handlersMap.FilterMap[offset];
+                ToSSA.ExceptionHandlingClause nextClause = null;
+                ExceptionHandler exceptionHandler = null;
+#endif
                 if (currentFilter != null)
                 {
                     exceptionHandler = currentFilter.Parent;

@@ -23,8 +23,8 @@
  */
 
 using System;
-using System.Drawing;
-using System.Net;
+using System.Collections.Generic;
+
 using static Runic.CIL.ToSSA;
 using static Runic.CIL.ToSSA.ExceptionHandlersMap;
 using static Runic.CIL.ToSSA.ExceptionHandlingClause;
@@ -251,8 +251,11 @@ namespace Runic.CIL
             public override void Switch(int offset, Instruction tag, int[] parameters, int[] targets) { tag.EmitSwitch(_toSSA, offset, parameters, targets); }
             public override void Phi(int offset, int destination, Dictionary<int, int> locals) { _toSSA.Phi(offset, destination, locals); }
         }
-
+#if NET6_0_OR_GREATER
         CIL.Destackifier.ExceptionHandlingClause[]? ToDestackifierEhc(ExceptionHandlingClause[]? clauses)
+#else
+        CIL.Destackifier.ExceptionHandlingClause[] ToDestackifierEhc(ExceptionHandlingClause[] clauses)
+#endif
         {
             if (clauses == null) { return null; }
             List<CIL.Destackifier.ExceptionHandlingClause> destackifierEhc = new List<CIL.Destackifier.ExceptionHandlingClause>();
@@ -274,7 +277,11 @@ namespace Runic.CIL
         {
             Process(null, GetMethodSignature(methodToken), bytecode);
         }
+#if NET6_0_OR_GREATER
         public void Process(ExceptionHandlingClause[]? exceptionHandlingClauses, uint methodToken, byte[] bytecode)
+#else
+        public void Process(ExceptionHandlingClause[] exceptionHandlingClauses, uint methodToken, byte[] bytecode)
+#endif
         {
             Process(exceptionHandlingClauses, GetMethodSignature(methodToken), bytecode);
         }
@@ -282,7 +289,11 @@ namespace Runic.CIL
         {
             Process(null, methodSignature, bytecode);
         }
+#if NET6_0_OR_GREATER
         public void Process(ExceptionHandlingClause[]? exceptionHandlingClauses, byte[] methodSignature, byte[] bytecode)
+#else
+        public void Process(ExceptionHandlingClause[] exceptionHandlingClauses, byte[] methodSignature, byte[] bytecode)
+#endif
         {
             ExceptionHandlersMap exceptionHandlersMap = new ExceptionHandlersMap(bytecode.Length);
             SSAConverter converter = new SSAConverter(this);

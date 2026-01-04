@@ -23,11 +23,10 @@
  */
 
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Net;
 using static Runic.CIL.ToSSA.Instruction;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Runic.CIL
 {
@@ -41,14 +40,24 @@ namespace Runic.CIL
                 internal int TryOffset { get { return _tryOffset; } }
                 uint _tryLength;
                 internal uint TryLength { get { return _tryLength; } }
+#if NET6_0_OR_GREATER
                 ExceptionHandler? _parent = null;
                 public ExceptionHandler? Parent { get { return _parent; } set { _parent = value; } }
+#else
+                ExceptionHandler _parent = null;
+                public ExceptionHandler Parent { get { return _parent; } set { _parent = value; } }
+#endif
                 List<ExceptionHandlingClause.Clause> _clauses = new List<ExceptionHandlingClause.Clause>();
                 public IEnumerable<ExceptionHandlingClause.Clause> Clauses { get { return _clauses; } }
                 List<ExceptionHandlingClause.Filter> _filters = new List<ExceptionHandlingClause.Filter>();
                 public IEnumerable<ExceptionHandlingClause.Filter> Filters { get { return _filters; } }
+#if NET6_0_OR_GREATER
                 ExceptionHandlingClause.Finally? _finally = null;
                 public ExceptionHandlingClause.Finally? Finally { get { return _finally; } }
+#else
+                ExceptionHandlingClause.Finally _finally = null;
+                public ExceptionHandlingClause.Finally Finally { get { return _finally; } }
+#endif
                 public void AddClause(ExceptionHandlingClause clause)
                 {
                     switch (clause)
@@ -83,7 +92,11 @@ namespace Runic.CIL
             }
 
             ExceptionHandler[] _handlers;
+#if NET6_0_OR_GREATER
             public ExceptionHandler? this[int offset] { get  { return _handlers[offset]; } }
+#else
+            public ExceptionHandler this[int offset] { get { return _handlers[offset]; } }
+#endif
 
             ToSSA.ExceptionHandlingClause.Filter[] _filterMap;
             public ToSSA.ExceptionHandlingClause.Filter[] FilterMap { get { return _filterMap; } }
@@ -122,7 +135,11 @@ namespace Runic.CIL
                 int end = handler.TryOffset + (int)handler.TryLength;
                 for (int n = start; n < end; n++)
                 {
+#if NET6_0_OR_GREATER
                     ExceptionHandler? existingHandler = _handlers[n];
+#else
+                    ExceptionHandler existingHandler = _handlers[n];
+#endif
                     if (existingHandler == null)
                     {
                         _handlers[n] = handler;
@@ -136,7 +153,11 @@ namespace Runic.CIL
                         _handlers[n] = handler;
                         continue;
                     }
+#if NET6_0_OR_GREATER
                     ExceptionHandler? parent = existingHandler.Parent;
+#else
+                    ExceptionHandler parent = existingHandler.Parent;
+#endif
                     while (true)
                     {
                         if (parent == null)

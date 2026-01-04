@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Runic.CIL.ToSSA</AssemblyName>
+    <RootNamespace>Runic.CIL.ToSSA</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\Destackifier.cs">
+      <Link>Destackifier.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\ExceptionHandlersMap.cs">
+      <Link>ExceptionHandlersMap.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Instructions.cs">
+      <Link>Instructions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\ToSSA.cs">
+      <Link>ToSSA.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Runic.Algorithms.ToSSA" Version="1.0.1" />
+    <PackageReference Include="Runic.CIL.Destackifier" Version="1.0.2" />
+  </ItemGroup>
+</Project>
