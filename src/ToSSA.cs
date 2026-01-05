@@ -238,6 +238,7 @@ namespace Runic.CIL
         public virtual void Phi(int offset, int destination, Dictionary<int, int> locals) { }
         public virtual void Nop(int offset) { }
         public virtual void Throw(int offset, int exception) { }
+        public virtual void Rethrow(int offset) { }
         public virtual void Leave(int offset, int address) { }
         public virtual void Break(int offset) { }
 

@@ -1237,6 +1237,12 @@ namespace Runic.CIL
                 public override void EmitStatement(ToSSA toSSA, int offset, int[] parameters) { toSSA.Throw(offset, parameters[0]); }
                 public override void EmitSwitch(ToSSA toSSA, int offset, int[] parameters, int[] addresses) { toSSA.Throw(offset, parameters[0]); }
             }
+            internal class Throw : Instruction
+            {
+                public Throw() { }
+                public override void EmitStatement(ToSSA toSSA, int offset, int[] parameters) { toSSA.Throw(offset, parameters[0]); }
+                public override void EmitSwitch(ToSSA toSSA, int offset, int[] parameters, int[] addresses) { toSSA.Throw(offset, parameters[0]); }
+            }
             internal class Leave : Instruction
             {
                 int _address;

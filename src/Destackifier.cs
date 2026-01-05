@@ -256,7 +256,26 @@ namespace Runic.CIL
             }
             public override void Rethrow(int offset)
             {
-                throw new NotImplementedException("Exception handling not yet supported in ToSSA destackifier.");
+#if NET6_0_OR_GREATER
+                ExceptionHandler? exceptionHandler = _handlersMap[offset];
+#else
+                ExceptionHandler exceptionHandler = _handlersMap[offset];
+#endif
+                if (exceptionHandler != null)
+                {
+                    List<int> offsets = new List<int>();
+                    while (exceptionHandler != null)
+                    {
+                        foreach (ToSSA.ExceptionHandlingClause.Clause clause in exceptionHandler.Clauses) { offsets.Add(clause.HandlerOffset); }
+                        foreach (ToSSA.ExceptionHandlingClause.Filter filter in exceptionHandler.Filters) { offsets.Add(filter.HandlerOffset); }
+                        exceptionHandler = exceptionHandler.Parent;
+                    }
+                    _converter.EmitSwitch(offset, new Instruction.Rethrow(), new int[] { }, offsets.ToArray());
+                }
+                else
+                {
+                    _converter.EmitStatement(offset, new Instruction.Rethrow(), new int[] { });
+                }
             }
             public override void Leave(int offset, int address)
             {
