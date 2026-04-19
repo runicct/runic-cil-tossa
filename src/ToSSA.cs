@@ -250,7 +250,18 @@ namespace Runic.CIL
             public override void Statement(int offset, Instruction tag, int[] parameters) { tag.EmitStatement(_toSSA, offset, parameters); }
             public override void Branch(int offset, Instruction tag, int[] parameters, bool condition, int address) { tag.EmitBranch(_toSSA, offset, parameters, condition, address); }
             public override void Switch(int offset, Instruction tag, int[] parameters, int[] targets) { tag.EmitSwitch(_toSSA, offset, parameters, targets); }
-            public override void Phi(int offset, int destination, Dictionary<int, int> locals) { _toSSA.Phi(offset, destination, locals); }
+            public override void Phi(int offset, int destination, Dictionary<int, int> locals) 
+            {
+                if (locals.Count <= 1)
+                {
+                    foreach (int local in locals.Values)
+                    {
+                        if (local != destination) { _toSSA.StLoc(offset, destination, local); }
+                        return;
+                    }
+                }    
+                _toSSA.Phi(offset, destination, locals);
+            }
         }
 #if NET6_0_OR_GREATER
         CIL.Destackifier.ExceptionHandlingClause[]? ToDestackifierEhc(ExceptionHandlingClause[]? clauses)
