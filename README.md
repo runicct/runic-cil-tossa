@@ -1,6 +1,7 @@
 # How to use this module
 
-To use this module you are expected to imherith from the  Runic.CIL.ToSSA and implement your callbacks. For instance the toy sample here implements a mini pretty printer:
+To use this module you are expected to imherith from the  Runic.CIL.ToSSA and implement your callbacks.
+For instance the toy sample here implements a mini pretty printer:
 
 ``` csharp
         static void Test(int arg)
@@ -121,10 +122,15 @@ IL_64: BrTrue IL_9 loc_35
 IL_66: Ret
 ```
 
-Please not a couple of things:
+Please note a couple of things:
 * During the ToSSA process multiple instructions can be generated for a single CIL instruction
   and therefore will be tied to the same IL offset. Usually any consumer would detect this and
   use a single offset for a given group of instructions.
 * The process only do some oportunistic optimizations (mostly in feed-forward cases) and therefore
   the output code may have unused locals, or repeated Phi instructions. This is intentional as it
   lets the consumer decide where to put the cursor between the optimization / cleanup level and time spent doing so.
+* This sample uses reflection to stay consise and simple but if you want to operate on assemblies
+  directly without having to involve System.Reflection you can use Runic.Dotnet.AssemblyLoader instead.
+
+In a real project you would likely add the full translation of the SEH information, implement all the
+instructions callbacks and likely re-process the stream to suit your need.
